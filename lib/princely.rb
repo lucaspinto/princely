@@ -94,4 +94,12 @@ class Princely
     pdf.puts(string)
     pdf.close
   end
+  
+  def self.html_rel_to_abs(html_string)
+    html_string.gsub!(".com:/", ".com/") # strip out bad attachment_fu URLs
+    html_string.gsub!("src=\"/", "src=\"#{Rails.root}/public/") # reroute absolute paths
+    #tests goes better if we dont make any replacements when there is nothing to cut (if there is no "?")
+    html_string.gsub!( /src=("\S+?\d*")/i ){ |s| s.split('?')[1].nil? ? s : (s.split('?').first + '"'.html_safe).html_safe }
+    html_string
+  end
 end
